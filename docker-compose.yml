@@ -1,0 +1,31 @@
+version: '2'
+volumes:
+  database_data:
+    external: true
+  odoo_data:
+    external: true
+services:
+  odoo:
+    image: geroafonso/odoo9-arg
+    environment:
+      PROXY_MODE: 'False'
+      SERVER_MODE: ''
+      VIRTUAL_HOST: odoo0.local
+      VIRTUAL_PORT: '8069'
+      WORKERS: '0'
+    volumes:
+    - odoo_data:/opt/odoo/data
+    links:
+    - aeroo:aeroo
+    - database:db
+    ports:
+    - 8069:8069
+  aeroo:
+    image: adhoc/aeroo-docs
+  database:
+    image: postgres:9.5
+    environment:
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_USER: odoo
+    volumes:
+    - database_data:/var/lib/postgresql/data
